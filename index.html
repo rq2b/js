@@ -1,31 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Крестики-нолики с алгоритмом</title>
+
+    <title>Dungeon</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
       rel="stylesheet"
     />
+
     <link rel="stylesheet" href="styles.css" />
-    <script src="tictactoe.js" defer></script>
+    <script type="module" src="main.js"></script>
   </head>
 
   <body>
     <main class="game">
-      <h1>Крестики-нолики</h1>
+      <h1>Dungeon</h1>
 
       <p id="message">Начать игру:</p>
 
       <div id="start">
-        <button id="start_player">Начать: Игрок</button>
-        <button id="start_algorithm">Начать: Алгоритм</button>
+        <button id="start_game">Начать игру</button>
       </div>
 
-      <div id="board"></div>
+      <div id="actions"></div>
     </main>
   </body>
 </html>

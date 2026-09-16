@@ -17,7 +17,7 @@ body {
 
 .game {
     width: 100%;
-    max-width: 360px;
+    max-width: 420px;
     padding: 20px;
 
     text-align: center;
@@ -29,50 +29,19 @@ h1 {
 }
 
 #message {
-    min-height: 1.5em;
+    min-height: 80px;
+    white-space: pre-line;
     color: #b9b9b9;
 }
 
-#start {
+#actions {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#board {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-
-    width: 100%;
-    margin-top: 20px;
-
-    border: 1px solid #525252;
-}
-
-.cell {
-    width: 100%;
-    aspect-ratio: 1;
-
-    border: 1px solid #525252;
-    border-radius: 0;
-
-    background: #222222;
-    color: #ffffff;
-
-    font-size: 2rem;
-    cursor: pointer;
-}
-
-.cell:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: #686868;
-}
-
-.cell:disabled {
-    cursor: default;
-}
-
 button {
+    width: 100%;
     padding: 10px;
 
     border: 1px solid #525252;
@@ -85,13 +54,8 @@ button {
     cursor: pointer;
 }
 
-button:hover:not(:disabled) {
+button:hover {
     background: rgba(255, 255, 255, 0.04);
     border-color: #686868;
     color: #ffffff;
-}
-
-button:disabled {
-    cursor: default;
-    color: #7c7c7c;
 }
