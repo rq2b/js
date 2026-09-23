@@ -40,7 +40,15 @@ function next_turn() {
     }
 }
 
-console.log(combat.current_actor)
-next_turn()
-console.log(combat.current_actor)
+function calculate_damage(attacker, defender) {
+    return Math.max(1, attacker.attack - defender.defense);
+}
 
+function attack(attacker, defender) {
+    let damage = calculate_damage(attacker, defender);
+    defender.hp = Math.max(0, defender.hp - damage);
+    return { damage: damage };
+}
+
+attack(player, boss);
+console.log(boss.hp);
