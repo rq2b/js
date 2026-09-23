@@ -1,4 +1,6 @@
 import {
+  PLAYER_NAME,
+  BOSS_NAME,
   PLAYER_SETTINGS,
   BOSS_SETTINGS
 } from "./config.js";
@@ -12,7 +14,7 @@ import {
 } from "./actions.js";
 
 const player = {
-  name: "Игрок",
+  name: PLAYER_NAME,
   hp: PLAYER_SETTINGS.max_hp,
   max_hp: PLAYER_SETTINGS.max_hp,
   attack: PLAYER_SETTINGS.attack,
@@ -22,7 +24,7 @@ const player = {
 };
 
 const boss = {
-  name: "Босс",
+  name: BOSS_NAME,
   hp: BOSS_SETTINGS.max_hp,
   max_hp: BOSS_SETTINGS.max_hp,
   attack: BOSS_SETTINGS.attack,
@@ -55,7 +57,7 @@ function take_turn() {
     return;
   }
 
-  let action = get_action("attack");
+  let action = get_action("heal");
 
   if (combat.current_actor == "player") {
     action.handler(combat.player, combat.boss);

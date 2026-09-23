@@ -1,5 +1,8 @@
 import {
-  ATTACK_SETTINGS
+  ATTACK_SETTINGS,
+  HEAL_SETTINGS,
+  PLAYER_NAME,
+  BOSS_NAME
 } from "./config.js";
 
 export function calculate_damage(attacker, defender) {
@@ -53,6 +56,42 @@ export function strong_attack(attacker, defender) {
   return {
     damage: damage,
     hit: true
+  };
+}
+
+export function heal(player) {
+  if (player.name == BOSS_NAME) {
+    console.warn("The boss can't heal");
+    return {
+      healed: false,
+      amount: 0
+    };
+  }
+
+  if (player.heals <= 0) {
+    console.log(`${player.name} has no heals left`);
+    return {
+      healed: false,
+      amount: 0
+    };
+  }
+
+  let old_hp = player.hp;
+
+  player.hp = Math.min(
+    player.max_hp,
+    player.hp + HEAL_SETTINGS.amount
+  );
+
+  let amount = player.hp - old_hp;
+
+  player.heals--;
+
+  console.log(`${player.name} healed for ${amount} HP`);
+
+  return {
+    healed: true,
+    amount: amount
   };
 }
 

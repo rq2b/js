@@ -1,3 +1,6 @@
+export const PLAYER_NAME = "Игрок";
+export const BOSS_NAME = "Босс";
+
 export const PLAYER_SETTINGS = {
     max_hp: 100,
     attack: 10,
@@ -16,3 +19,6 @@ export const ATTACK_SETTINGS = {
   strong_hit_chance: 0.75
 };
 
+export const HEAL_SETTINGS = {
+  amount: 30
+};
