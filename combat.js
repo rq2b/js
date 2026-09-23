@@ -11,3 +11,20 @@ export function attack(attacker, defender) {
 
   return { damage: damage };
 }
+
+export function check_combat_end(combat) {
+  if (combat.player.hp <= 0) {
+    combat.result = "boss_win";
+    console.log("Combat ended; boss wins");
+    return true;
+  }
+
+  if (combat.boss.hp <= 0) {
+    combat.result = "player_win";
+    console.log("Combat ended; player wins");
+    return true;
+  }
+
+  return false;
+}
+

@@ -4,7 +4,8 @@ import {
 } from "./config.js";
 
 import {
-  attack
+  attack,
+  check_combat_end
 } from "./combat.js";
 
 const player = {
@@ -47,7 +48,7 @@ function next_turn() {
 }
 
 function take_turn() {
-  if (check_combat_end()) {
+  if (check_combat_end(combat)) {
     return;
   }
 
@@ -60,21 +61,6 @@ function take_turn() {
   next_turn();
 }
 
-function check_combat_end() {
-  if (combat.player.hp <= 0) {
-    combat.result = "boss_win";
-    console.log("Combat ended; boss wins");
-    return true;
-  }
-
-  if (combat.boss.hp <= 0) {
-    combat.result = "player_win";
-    console.log("Combat ended; player wins");
-    return true;
-  }
-
-  return false;
-}
-
 take_turn();
 take_turn();
+
