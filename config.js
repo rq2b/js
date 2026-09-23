@@ -11,3 +11,8 @@ export const BOSS_SETTINGS = {
     defense: 7
 };
 
+export const ATTACK_SETTINGS = {
+  strong_multiplier: 2,
+  strong_hit_chance: 0.75
+};
+

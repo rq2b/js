@@ -1,3 +1,7 @@
+import {
+  ATTACK_SETTINGS
+} from "./config.js";
+
 export function calculate_damage(attacker, defender) {
   return Math.max(1, attacker.attack - defender.defense);
 }
@@ -26,5 +30,29 @@ export function check_combat_end(combat) {
   }
 
   return false;
+}
+
+export function strong_attack(attacker, defender) {
+  if (Math.random() >= ATTACK_SETTINGS.strong_hit_chance) {
+    console.log(`${attacker.name} missed the strong attack`);
+
+    return {
+      damage: 0,
+      hit: false
+    };
+  }
+
+  let damage = Math.max(1, (attacker.attack * ATTACK_SETTINGS.strong_multiplier) - defender.defense);
+
+  defender.hp = Math.max(0, defender.hp - damage);
+
+  console.log(
+    `${attacker.name} attacked ${defender.name} with a strong attack for ${damage} damage`
+  );
+
+  return {
+    damage: damage,
+    hit: true
+  };
 }
 
