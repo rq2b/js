@@ -1,3 +1,7 @@
+import {
+  attack
+} from "./combat.js";
+
 const ACTIONS = {
   ATTACK: "attack"
 };
@@ -5,7 +9,7 @@ const ACTIONS = {
 const action = {
   id: ACTIONS.ATTACK,
   name: "Атака",
-  handler: null // TODO: add handler
+  handler: attack
 };
 
 export const ACTION_REGISTRY = {

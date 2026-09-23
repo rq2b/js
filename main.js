@@ -4,9 +4,12 @@ import {
 } from "./config.js";
 
 import {
-  attack,
   check_combat_end
 } from "./combat.js";
+
+import {
+  get_action
+} from "./actions.js";
 
 const player = {
   name: "Игрок",
@@ -52,10 +55,12 @@ function take_turn() {
     return;
   }
 
+  let action = get_action("attack");
+
   if (combat.current_actor == "player") {
-    attack(combat.player, combat.boss);
+    action.handler(combat.player, combat.boss);
   } else {
-    attack(combat.boss, combat.player);
+    action.handler(combat.boss, combat.player);
   }
 
   next_turn();
