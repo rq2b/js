@@ -20,7 +20,8 @@ const player = {
   attack: PLAYER_SETTINGS.attack,
   defense: PLAYER_SETTINGS.defense,
   effects: [],
-  heals: PLAYER_SETTINGS.heals
+  heals: PLAYER_SETTINGS.heals,
+  defending: false
 };
 
 const boss = {
@@ -29,7 +30,8 @@ const boss = {
   max_hp: BOSS_SETTINGS.max_hp,
   attack: BOSS_SETTINGS.attack,
   defense: BOSS_SETTINGS.defense,
-  effects: []
+  effects: [],
+  defending: false
 };
 
 const combat = {
@@ -57,7 +59,7 @@ function take_turn() {
     return;
   }
 
-  let action = get_action("heal");
+  let action = get_action("defend");
 
   if (combat.current_actor == "player") {
     action.handler(combat.player, combat.boss);

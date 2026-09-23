@@ -1,13 +1,15 @@
 import {
   attack,
   strong_attack,
-  heal
+  heal,
+  defend
 } from "./combat.js";
 
 const ACTIONS = {
   ATTACK: "attack",
   STRONG_ATTACK: "strong_attack",
-  HEAL: "heal"
+  HEAL: "heal",
+  DEFEND: "defend"
 };
 
 const action_attack = {
@@ -28,10 +30,17 @@ const action_heal = {
   handler: heal
 };
 
+const action_defend = {
+  id: ACTIONS.DEFEND,
+  name: "Защита",
+  handler: defend
+};
+
 export const ACTION_REGISTRY = {
   [action_attack.id]: action_attack,
   [action_strong_attack.id]: action_strong_attack,
-  [action_heal.id]: action_heal
+  [action_heal.id]: action_heal,
+  [action_defend.id]: action_defend
 };
 
 export function get_action(action_id) {

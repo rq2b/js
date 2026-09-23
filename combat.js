@@ -95,3 +95,12 @@ export function heal(player) {
   };
 }
 
+export function defend(actor) {
+  actor.defending = true;
+
+  console.log(`${actor.name} is defending`);
+
+  return {
+    defending: true
+  };
+}

@@ -22,3 +22,8 @@ export const ATTACK_SETTINGS = {
 export const HEAL_SETTINGS = {
   amount: 30
 };
+
+export const DEFENSE_SETTINGS = {
+  damage_multiplier: 0.5
+};
+
