@@ -3,6 +3,10 @@ import {
   BOSS_SETTINGS
 } from "./config.js";
 
+import {
+  attack
+} from "./combat.js";
+
 const player = {
   name: "Игрок",
   hp: PLAYER_SETTINGS.max_hp,
@@ -42,20 +46,6 @@ function next_turn() {
   console.log(combat);
 }
 
-function calculate_damage(attacker, defender) {
-  return Math.max(1, attacker.attack - defender.defense);
-}
-
-function attack(attacker, defender) {
-  let damage = calculate_damage(attacker, defender);
-
-  defender.hp = Math.max(0, defender.hp - damage);
-
-  console.log(`${attacker.name} attacked ${defender.name} for ${damage} damage`)
-
-  return { damage: damage };
-}
-
 function take_turn() {
   if (check_combat_end()) {
     return;
@@ -86,3 +76,5 @@ function check_combat_end() {
   return false;
 }
 
+take_turn();
+take_turn();
