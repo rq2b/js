@@ -63,9 +63,27 @@ function take_turn() {
     attack(combat.boss, combat.player);
   }
 
+  if (check_combat_end()) {
+    return;
+  }
+
   next_turn();
 }
 
-take_turn();
-take_turn();
+function check_combat_end() {
+  if (combat.player.hp <= 0) {
+    combat.result = "boss_win";
+    console.log("Combat ended; boss wins");
+    return true;
+  }
 
+  if (combat.boss.hp <= 0) {
+    combat.result = "player_win";
+    console.log("Combat ended; player wins");
+    return true;
+  }
+
+  return false;
+}
+
+take_turn();
