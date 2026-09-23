@@ -39,7 +39,7 @@ function next_turn() {
     combat.turn++;
   }
 
-  console.log(combat[combat.current_actor]);
+  console.log(combat);
 }
 
 function calculate_damage(attacker, defender) {
@@ -57,14 +57,14 @@ function attack(attacker, defender) {
 }
 
 function take_turn() {
+  if (check_combat_end()) {
+    return;
+  }
+
   if (combat.current_actor == "player") {
     attack(combat.player, combat.boss);
   } else {
     attack(combat.boss, combat.player);
-  }
-
-  if (check_combat_end()) {
-    return;
   }
 
   next_turn();
@@ -86,4 +86,3 @@ function check_combat_end() {
   return false;
 }
 
-take_turn();
