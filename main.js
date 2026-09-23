@@ -31,3 +31,16 @@ const combat = {
     result: null
 };
 
+function next_turn() {
+    if (combat.current_actor == "player") {
+        combat.current_actor = "boss";
+    } else {
+        combat.current_actor = "player";
+        combat.turn++;
+    }
+}
+
+console.log(combat.current_actor)
+next_turn()
+console.log(combat.current_actor)
+
