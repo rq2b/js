@@ -54,12 +54,12 @@ function next_turn() {
   console.log(combat);
 }
 
-function take_turn() {
+function take_turn(combat, attack_type) {
   if (check_combat_end(combat)) {
     return;
   }
 
-  let action = get_action("defend");
+  let action = get_action(attack_type);
 
   if (combat.current_actor == "player") {
     action.handler(combat.player, combat.boss);
@@ -70,6 +70,6 @@ function take_turn() {
   next_turn();
 }
 
-take_turn();
-take_turn();
+take_turn(combat, "defend");
+take_turn(combat, "attack");
 
