@@ -3,12 +3,15 @@ import {
   HEAL_SETTINGS,
   PLAYER_NAME,
   BOSS_NAME,
-  ATTACK_SETTINGS,
   CRITICAL_SETTINGS
 } from "./config.js";
 
-export function calculate_damage(attacker, defender) {
-  let damage = Math.max(1, attacker.attack - defender.defense);
+function calculate_damage(attacker, defender, multiplier = 1) {
+  let damage = Math.max(
+    1,
+    (attacker.attack * multiplier) - defender.defense
+  );
+
   let critical = check_critical();
 
   if (critical) {
@@ -21,10 +24,16 @@ export function calculate_damage(attacker, defender) {
   };
 }
 
-export function attack(attacker, defender) {
-  let result = calculate_damage(attacker, defender);
+function execute_attack(attacker, defender, multiplier = 1) {
+  let result = calculate_damage(attacker, defender, multiplier);
 
   defender.hp = Math.max(0, defender.hp - result.damage);
+
+  return result;
+}
+
+export function attack(attacker, defender) {
+  let result = execute_attack(attacker, defender);
 
   console.log(
     `${attacker.name} attacked ${defender.name} for ${result.damage} damage` +
@@ -56,20 +65,24 @@ export function strong_attack(attacker, defender) {
 
     return {
       damage: 0,
-      hit: false
+      hit: false,
+      critical: false
     };
   }
 
-  let damage = Math.max(1, (attacker.attack * ATTACK_SETTINGS.strong_multiplier) - defender.defense);
-
-  defender.hp = Math.max(0, defender.hp - damage);
+  let result = execute_attack(
+    attacker,
+    defender,
+    ATTACK_SETTINGS.strong_multiplier
+  );
 
   console.log(
-    `${attacker.name} attacked ${defender.name} with a strong attack for ${damage} damage`
+    `${attacker.name} attacked ${defender.name} with a strong attack for ${result.damage} damage` +
+    `${result.critical ? " (critical hit)" : ""}`
   );
 
   return {
-    damage: damage,
+    ...result,
     hit: true
   };
 }
