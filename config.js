@@ -27,3 +27,8 @@ export const DEFENSE_SETTINGS = {
   damage_multiplier: 0.5
 };
 
+export const CRITICAL_SETTINGS = {
+  chance: 0.15,
+  multiplier: 2
+};
+

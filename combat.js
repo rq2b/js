@@ -2,21 +2,36 @@ import {
   ATTACK_SETTINGS,
   HEAL_SETTINGS,
   PLAYER_NAME,
-  BOSS_NAME
+  BOSS_NAME,
+  ATTACK_SETTINGS,
+  CRITICAL_SETTINGS
 } from "./config.js";
 
 export function calculate_damage(attacker, defender) {
-  return Math.max(1, attacker.attack - defender.defense);
+  let damage = Math.max(1, attacker.attack - defender.defense);
+  let critical = check_critical();
+
+  if (critical) {
+    damage = calculate_critical_damage(damage);
+  }
+
+  return {
+    damage: damage,
+    critical: critical
+  };
 }
 
 export function attack(attacker, defender) {
-  let damage = calculate_damage(attacker, defender);
+  let result = calculate_damage(attacker, defender);
 
-  defender.hp = Math.max(0, defender.hp - damage);
+  defender.hp = Math.max(0, defender.hp - result.damage);
 
-  console.log(`${attacker.name} attacked ${defender.name} for ${damage} damage`);
+  console.log(
+    `${attacker.name} attacked ${defender.name} for ${result.damage} damage` +
+    `${result.critical ? " (critical hit)" : ""}`
+  );
 
-  return { damage: damage };
+  return result;
 }
 
 export function check_combat_end(combat) {
@@ -104,3 +119,12 @@ export function defend(actor) {
     defending: true
   };
 }
+
+function check_critical() {
+  return Math.random() < CRITICAL_SETTINGS.chance;
+}
+
+function calculate_critical_damage(damage) {
+  return damage * CRITICAL_SETTINGS.multiplier;
+}
+
