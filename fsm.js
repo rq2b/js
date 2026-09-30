@@ -16,6 +16,11 @@ import {
   choose_player_action
 } from "./ai.js";
 
+import {
+  process_effects,
+  update_effects
+} from "./effects.js";
+
 export const COMBAT_STATES = {
   PLAYER_TURN: "player_turn",
   BOSS_TURN: "boss_turn",
@@ -88,6 +93,14 @@ export function run_turn(fsm, combat) {
   let actor_id = get_actor_id(fsm);
   let actor = combat[actor_id];
   let target = actor_id == ACTORS.PLAYER ? combat.boss : combat.player;
+
+  process_effects(actor);
+
+  if (check_combat_end(combat)) {
+    transition(fsm, combat, COMBAT_STATES.COMBAT_END);
+    return;
+  }
+
   let action_id;
 
   if (actor_id == ACTORS.BOSS) {
@@ -98,6 +111,14 @@ export function run_turn(fsm, combat) {
 
   let action = get_action(action_id);
   let result = take_turn(combat, actor, target, action);
+
+  if (check_combat_end(combat)) {
+    transition(fsm, combat, COMBAT_STATES.COMBAT_END);
+    return result;
+  }
+
+  update_effects(actor);
+
   let state = next_state(fsm, combat);
 
   if (state == COMBAT_STATES.COMBAT_END) {

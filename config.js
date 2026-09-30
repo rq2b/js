@@ -45,3 +45,10 @@ export const BOSS_AI_SETTINGS = {
   strong_attack_hp_threshold: 0.75
 };
 
+export const EFFECT_SETTINGS = {
+  bleeding: {
+    duration: 3,
+    damage: 5
+  }
+};
+

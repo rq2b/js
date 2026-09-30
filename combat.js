@@ -5,6 +5,10 @@ import {
   DEFENSE_SETTINGS
 } from "./config.js";
 
+import {
+  apply_bleeding
+} from "./effects.js";
+
 function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
   let damage = attacker.attack * multiplier;
   let critical = check_critical();
@@ -90,6 +94,10 @@ export function strong_attack(attacker, defender) {
     `${attacker.name} attacked ${defender.name} with a strong attack for ${result.damage} damage` +
     `${result.critical ? " (critical hit)" : ""}`
   );
+
+  if (result.critical) {
+    apply_bleeding(defender);
+  }
 
   return {
     ...result,

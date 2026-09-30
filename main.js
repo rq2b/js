@@ -41,8 +41,5 @@ const combat = {
 
 const fsm = create_fsm();
 
-run_turn(fsm, combat);
-run_turn(fsm, combat);
-run_turn(fsm, combat);
-run_turn(fsm, combat);
+for (let i = 0; i < 130; i++) { run_turn(fsm, combat); }
 
