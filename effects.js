@@ -2,6 +2,10 @@ import {
   EFFECT_SETTINGS
 } from "./config.js";
 
+import {
+  show_message
+} from "./ui.js";
+
 export const EFFECTS = {
   BLEEDING: "bleeding",
   STUN: "stun",
@@ -35,8 +39,8 @@ function apply_effect(actor, effect) {
   if (effect.id == EFFECTS.BLEEDING) {
     actor.hp = Math.max(0, actor.hp - effect.damage);
 
-    console.log(
-      `${actor.name} takes ${effect.damage} bleeding damage`
+    show_message(
+      `${actor.name} получил ${effect.damage} урона от кровотечения.`
     );
   }
 }
@@ -57,8 +61,8 @@ export function add_effect(actor, effect) {
   if (!existing_effect) {
     actor.effects.push(effect);
 
-    console.log(
-      `${actor.name} received effect ${effect.id}`
+    show_message(
+      `${actor.name} получил эффект ${effect.id}.`
     );
 
     return;
@@ -74,15 +78,15 @@ export function add_effect(actor, effect) {
 
     actor.effects.push(effect);
 
-    console.log(
-      `${actor.name} refreshed effect ${effect.id}`
+    show_message(
+      `${actor.name} обновил эффект ${effect.id}.`
     );
 
     return;
   }
 
-  console.log(
-    `${actor.name} already has stronger effect ${effect.id}`
+  show_message(
+    `${actor.name} уже имеет более сильный эффект ${effect.id}.`
   );
 }
 
@@ -118,8 +122,8 @@ export function update_effects(actor) {
   );
 
   for (let effect of finished_effects) {
-    console.log(
-      `${actor.name} effect ${effect.id} ended`
+    show_message(
+      `${actor.name}: эффект ${effect.id} закончился.`
     );
   }
 

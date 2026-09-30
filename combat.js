@@ -12,6 +12,10 @@ import {
   get_attack
 } from "./effects.js";
 
+import {
+  show_message
+} from "./ui.js";
+
 function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
   let damage = get_attack(attacker) * multiplier;
   let critical = check_critical();
@@ -52,9 +56,9 @@ function execute_attack(attacker, defender, multiplier = 1) {
 export function attack(attacker, defender) {
   let result = execute_attack(attacker, defender);
 
-  console.log(
-    `${attacker.name} attacked ${defender.name} for ${result.damage} damage` +
-    `${result.critical ? " (critical hit)" : ""}`
+  show_message(
+    `${attacker.name} атаковал ${defender.name} на ${result.damage} урона` +
+    `${result.critical ? "\nКритический удар!" : ""}`
   );
 
   if (result.critical) {
@@ -67,13 +71,13 @@ export function attack(attacker, defender) {
 export function check_combat_end(combat) {
   if (combat.player.hp <= 0) {
     combat.result = "boss_win";
-    console.log("Combat ended; boss wins");
+    show_message("Босс победил.");
     return true;
   }
 
   if (combat.boss.hp <= 0) {
     combat.result = "player_win";
-    console.log("Combat ended; player wins");
+    show_message("Игрок победил.");
     return true;
   }
 
@@ -82,7 +86,7 @@ export function check_combat_end(combat) {
 
 export function strong_attack(attacker, defender) {
   if (Math.random() >= ATTACK_SETTINGS.strong_hit_chance) {
-    console.log(`${attacker.name} missed the strong attack`);
+    show_message(`${attacker.name} промахнулся сильной атакой.`);
 
     return {
       damage: 0,
@@ -97,9 +101,9 @@ export function strong_attack(attacker, defender) {
     ATTACK_SETTINGS.strong_multiplier
   );
 
-  console.log(
-    `${attacker.name} attacked ${defender.name} with a strong attack for ${result.damage} damage` +
-    `${result.critical ? " (critical hit)" : ""}`
+  show_message(
+    `${attacker.name} нанёс ${result.damage} урона сильной атакой` +
+    `${result.critical ? "\nКритический удар!" : ""}`
   );
 
   if (result.critical) {
@@ -116,7 +120,7 @@ export function strong_attack(attacker, defender) {
 
 export function heal(actor) {
   if (actor.heals <= 0) {
-    console.log(`${actor.name} has no heals left`);
+    show_message(`${actor.name}: хилки закончились.`);
     return {
       healed: false,
       amount: 0
@@ -134,7 +138,7 @@ export function heal(actor) {
 
   actor.heals--;
 
-  console.log(`${actor.name} healed for ${amount} HP`);
+  show_message(`${actor.name} восстановил ${amount} HP.`);
 
   return {
     healed: true,
@@ -145,7 +149,7 @@ export function heal(actor) {
 export function defend(actor) {
   actor.defending = true;
 
-  console.log(`${actor.name} is defending`);
+  show_message(`${actor.name} защищается.`);
 
   return {
     defending: true

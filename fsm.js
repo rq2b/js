@@ -17,6 +17,10 @@ import {
 } from "./ai.js";
 
 import {
+  show_message
+} from "./ui.js";
+
+import {
   EFFECTS,
   process_effects,
   update_effects,
@@ -82,6 +86,26 @@ function next_state(fsm, combat) {
   return COMBAT_STATES.COMBAT_END;
 }
 
+function finish_turn(fsm, combat, actor, action, target) {
+  let result = take_turn(combat, actor, target, action);
+
+  if (check_combat_end(combat)) {
+    transition(fsm, combat, COMBAT_STATES.COMBAT_END);
+    return result;
+  }
+
+  update_effects(actor);
+
+  let state = next_state(fsm, combat);
+  transition(fsm, combat, state);
+
+  if (state != COMBAT_STATES.COMBAT_END) {
+    run_turn(fsm, combat);
+  }
+
+  return result;
+}
+
 export function run_turn(fsm, combat) {
   if (fsm.state == COMBAT_STATES.COMBAT_END) {
     return;
@@ -104,43 +128,33 @@ export function run_turn(fsm, combat) {
   }
 
   if (has_effect(actor, EFFECTS.STUN)) {
-    console.log(`${actor.name} is stunned; turn skipped`);
+    show_message(`${actor.name} оглушён; ход пропущен.`);
 
     update_effects(actor);
 
     let state = next_state(fsm, combat);
     transition(fsm, combat, state);
 
+    if (state != COMBAT_STATES.COMBAT_END) {
+      run_turn(fsm, combat);
+    }
+
     return;
   }
 
-  let action_id;
-
-  if (actor_id == ACTORS.BOSS) {
-    action_id = choose_boss_action(combat);
-  } else {
-    action_id = choose_player_action(combat);
+  if (actor_id == ACTORS.PLAYER) {
+    choose_player_action(
+      combat,
+      function(action_id) {
+        let action = get_action(action_id);
+        finish_turn(fsm, combat, actor, action, target);
+      }
+    );
+    return;
   }
 
+  let action_id = choose_boss_action(combat);
   let action = get_action(action_id);
-  let result = take_turn(combat, actor, target, action);
 
-  if (check_combat_end(combat)) {
-    transition(fsm, combat, COMBAT_STATES.COMBAT_END);
-    return result;
-  }
-
-  update_effects(actor);
-
-  let state = next_state(fsm, combat);
-
-  if (state == COMBAT_STATES.COMBAT_END) {
-    transition(fsm, combat, state);
-    return result;
-  }
-
-  transition(fsm, combat, state);
-
-  return result;
+  finish_turn(fsm, combat, actor, action, target);
 }
-

@@ -6,6 +6,11 @@ import {
   BOSS_AI_SETTINGS
 } from "./config.js";
 
+import {
+  choose,
+  show_message
+} from "./ui.js";
+
 export function choose_boss_action(combat) {
   let boss_hp_ratio = combat.boss.hp / combat.boss.max_hp;
   let player_hp_ratio = combat.player.hp / combat.player.max_hp;
@@ -28,15 +33,26 @@ export function choose_boss_action(combat) {
     action = ACTIONS.STRONG_ATTACK;
   }
 
-  console.log(`${combat.boss.name} chose to ${action}`);
+  show_message(`${combat.boss.name} выбрал действие: ${action}`);
 
   return action;
 }
 
-export function choose_player_action(combat) {
-  let action = ACTIONS.ATTACK;
+export function choose_player_action(combat, callback) {
+  let question =
+    `Ваш HP: ${combat.player.hp}/${combat.player.max_hp}\n` +
+    `Босс HP: ${combat.boss.hp}/${combat.boss.max_hp}`;
 
-  console.log(`${combat.player.name} chose to ${action}`);
+  let options = [
+    { value: ACTIONS.ATTACK, text: "Атаковать" },
+    { value: ACTIONS.STRONG_ATTACK, text: "Сильная атака" },
+    { value: ACTIONS.HEAL, text: "Лечиться" },
+    { value: ACTIONS.DEFEND, text: "Защищаться" }
+  ];
 
-  return action;
+  choose(
+    question,
+    options,
+    callback
+  );
 }
