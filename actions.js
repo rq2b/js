@@ -5,7 +5,7 @@ import {
   defend
 } from "./combat.js";
 
-const ACTIONS = {
+export const ACTIONS = {
   ATTACK: "attack",
   STRONG_ATTACK: "strong_attack",
   HEAL: "heal",
@@ -22,7 +22,7 @@ const action_strong_attack = {
   id: ACTIONS.STRONG_ATTACK,
   name: "Сильная атака",
   handler: strong_attack
-}
+};
 
 const action_heal = {
   id: ACTIONS.HEAL,
@@ -44,6 +44,12 @@ export const ACTION_REGISTRY = {
 };
 
 export function get_action(action_id) {
-  return ACTION_REGISTRY[action_id];
+  let action = ACTION_REGISTRY[action_id];
+
+  if (!action) {
+    console.warn(`Unknown action: ${action_id}`);
+  }
+
+  return action;
 }
 

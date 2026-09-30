@@ -6,10 +6,11 @@ import {
 } from "./config.js";
 
 import {
-  check_combat_end
+  take_turn
 } from "./combat.js";
 
 import {
+  ACTIONS,
   get_action
 } from "./actions.js";
 
@@ -31,6 +32,7 @@ const boss = {
   attack: BOSS_SETTINGS.attack,
   defense: BOSS_SETTINGS.defense,
   effects: [],
+  heals: BOSS_SETTINGS.heals,
   defending: false
 };
 
@@ -43,33 +45,14 @@ const combat = {
   result: null
 };
 
-function next_turn() {
-  if (combat.current_actor == "player") {
-    combat.current_actor = "boss";
-  } else {
-    combat.current_actor = "player";
-    combat.turn++;
-  }
+function run_turn(action_id) {
+  let action = get_action(action_id);
 
-  console.log(combat);
+  return take_turn(combat, action);
 }
 
-function take_turn(combat, attack_type) {
-  if (check_combat_end(combat)) {
-    return;
-  }
-
-  let action = get_action(attack_type);
-
-  if (combat.current_actor == "player") {
-    action.handler(combat.player, combat.boss);
-  } else {
-    action.handler(combat.boss, combat.player);
-  }
-
-  next_turn();
-}
-
-take_turn(combat, "defend");
-take_turn(combat, "attack");
+run_turn(ACTIONS.DEFEND);
+run_turn(ACTIONS.ATTACK);
+run_turn(ACTIONS.ATTACK);
+run_turn(ACTIONS.ATTACK);
 

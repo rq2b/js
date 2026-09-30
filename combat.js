@@ -1,22 +1,21 @@
 import {
   ATTACK_SETTINGS,
   HEAL_SETTINGS,
-  PLAYER_NAME,
-  BOSS_NAME,
-  CRITICAL_SETTINGS
+  CRITICAL_SETTINGS,
+  DEFENSE_SETTINGS
 } from "./config.js";
 
-function calculate_damage(attacker, defender, multiplier = 1) {
-  let damage = Math.max(
-    1,
-    (attacker.attack * multiplier) - defender.defense
-  );
-
+function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
+  let damage = attacker.attack * multiplier;
   let critical = check_critical();
 
   if (critical) {
     damage = calculate_critical_damage(damage);
   }
+
+  damage = Math.max(1, damage - defender.defense);
+  damage *= defense_multiplier;
+  damage = Math.max(1, damage);
 
   return {
     damage: damage,
@@ -25,7 +24,18 @@ function calculate_damage(attacker, defender, multiplier = 1) {
 }
 
 function execute_attack(attacker, defender, multiplier = 1) {
-  let result = calculate_damage(attacker, defender, multiplier);
+  let defense_multiplier = 1;
+
+  if (defender.defending) {
+    defense_multiplier = DEFENSE_SETTINGS.damage_multiplier;
+  }
+
+  let result = calculate_damage(
+    attacker,
+    defender,
+    multiplier,
+    defense_multiplier
+  );
 
   defender.hp = Math.max(0, defender.hp - result.damage);
 
@@ -87,35 +97,27 @@ export function strong_attack(attacker, defender) {
   };
 }
 
-export function heal(player) {
-  if (player.name == BOSS_NAME) {
-    console.warn("The boss can't heal");
+export function heal(actor) {
+  if (actor.heals <= 0) {
+    console.log(`${actor.name} has no heals left`);
     return {
       healed: false,
       amount: 0
     };
   }
 
-  if (player.heals <= 0) {
-    console.log(`${player.name} has no heals left`);
-    return {
-      healed: false,
-      amount: 0
-    };
-  }
+  let old_hp = actor.hp;
 
-  let old_hp = player.hp;
-
-  player.hp = Math.min(
-    player.max_hp,
-    player.hp + HEAL_SETTINGS.amount
+  actor.hp = Math.min(
+    actor.max_hp,
+    actor.hp + HEAL_SETTINGS.amount
   );
 
-  let amount = player.hp - old_hp;
+  let amount = actor.hp - old_hp;
 
-  player.heals--;
+  actor.heals--;
 
-  console.log(`${player.name} healed for ${amount} HP`);
+  console.log(`${actor.name} healed for ${amount} HP`);
 
   return {
     healed: true,
@@ -131,6 +133,52 @@ export function defend(actor) {
   return {
     defending: true
   };
+}
+
+function next_turn(combat) {
+  if (combat.current_actor == "player") {
+    combat.current_actor = "boss";
+  } else {
+    combat.current_actor = "player";
+    combat.turn++;
+  }
+
+  combat.phase = `${combat.current_actor}_turn`;
+  combat[combat.current_actor].defending = false;
+
+  console.log(combat);
+}
+
+export function take_turn(combat, action) {
+  if (check_combat_end(combat)) {
+    return;
+  }
+
+  if (!action) {
+    console.warn("Cannot take turn without an action");
+    return;
+  }
+
+  let actor;
+  let target;
+
+  if (combat.current_actor == "player") {
+    actor = combat.player;
+    target = combat.boss;
+  } else {
+    actor = combat.boss;
+    target = combat.player;
+  }
+
+  let result = action.handler(actor, target);
+
+  if (check_combat_end(combat)) {
+    return result;
+  }
+
+  next_turn(combat);
+
+  return result;
 }
 
 function check_critical() {
