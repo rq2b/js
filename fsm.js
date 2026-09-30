@@ -17,8 +17,10 @@ import {
 } from "./ai.js";
 
 import {
+  EFFECTS,
   process_effects,
-  update_effects
+  update_effects,
+  has_effect
 } from "./effects.js";
 
 export const COMBAT_STATES = {
@@ -98,6 +100,17 @@ export function run_turn(fsm, combat) {
 
   if (check_combat_end(combat)) {
     transition(fsm, combat, COMBAT_STATES.COMBAT_END);
+    return;
+  }
+
+  if (has_effect(actor, EFFECTS.STUN)) {
+    console.log(`${actor.name} is stunned; turn skipped`);
+
+    update_effects(actor);
+
+    let state = next_state(fsm, combat);
+    transition(fsm, combat, state);
+
     return;
   }
 

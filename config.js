@@ -15,6 +15,28 @@ export const BOSS_SETTINGS = {
   heals: 0
 };
 
+export const player = {
+  name: PLAYER_NAME,
+  hp: PLAYER_SETTINGS.max_hp,
+  max_hp: PLAYER_SETTINGS.max_hp,
+  attack: PLAYER_SETTINGS.attack,
+  defense: PLAYER_SETTINGS.defense,
+  effects: [],
+  heals: PLAYER_SETTINGS.heals,
+  defending: false
+};
+
+export const boss = {
+  name: BOSS_NAME,
+  hp: BOSS_SETTINGS.max_hp,
+  max_hp: BOSS_SETTINGS.max_hp,
+  attack: BOSS_SETTINGS.attack,
+  defense: BOSS_SETTINGS.defense,
+  effects: [],
+  heals: BOSS_SETTINGS.heals,
+  defending: false
+};
+
 export const ATTACK_SETTINGS = {
   strong_multiplier: 2,
   strong_hit_chance: 0.75
@@ -49,6 +71,15 @@ export const EFFECT_SETTINGS = {
   bleeding: {
     duration: 3,
     damage: 5
+  },
+
+  stun: {
+    duration: 1
+  },
+
+  attack_boost: {
+    duration: 2,
+    amount: 2
   }
 };
 

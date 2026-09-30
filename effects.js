@@ -3,7 +3,9 @@ import {
 } from "./config.js";
 
 export const EFFECTS = {
-  BLEEDING: "bleeding"
+  BLEEDING: "bleeding",
+  STUN: "stun",
+  ATTACK_BOOST: "attack_boost"
 };
 
 function create_bleeding() {
@@ -11,6 +13,21 @@ function create_bleeding() {
     id: EFFECTS.BLEEDING,
     duration: EFFECT_SETTINGS.bleeding.duration,
     damage: EFFECT_SETTINGS.bleeding.damage
+  };
+}
+
+function create_stun() {
+  return {
+    id: EFFECTS.STUN,
+    duration: EFFECT_SETTINGS.stun.duration
+  };
+}
+
+function create_attack_boost() {
+  return {
+    id: EFFECTS.ATTACK_BOOST,
+    duration: EFFECT_SETTINGS.attack_boost.duration,
+    amount: EFFECT_SETTINGS.attack_boost.amount
   };
 }
 
@@ -28,6 +45,10 @@ function find_effect(actor, effect_id) {
   return actor.effects.find(
     effect => effect.id == effect_id // стрелочная функция
   );
+}
+
+export function has_effect(actor, effect_id) {
+  return Boolean(find_effect(actor, effect_id));
 }
 
 export function add_effect(actor, effect) {
@@ -69,6 +90,18 @@ export function apply_bleeding(actor) {
   add_effect(actor, create_bleeding());
 }
 
+export function get_attack(actor) {
+  let attack = actor.attack;
+
+  for (let effect of actor.effects) {
+    if (effect.id == EFFECTS.ATTACK_BOOST) {
+      attack += effect.amount;
+    }
+  }
+
+  return attack;
+}
+
 export function process_effects(actor) {
   for (let effect of actor.effects) {
     apply_effect(actor, effect);
@@ -94,3 +127,12 @@ export function update_effects(actor) {
     effect => effect.duration > 0
   );
 }
+
+export function apply_stun(actor) {
+  add_effect(actor, create_stun());
+}
+
+export function apply_attack_boost(actor) {
+  add_effect(actor, create_attack_boost());
+}
+

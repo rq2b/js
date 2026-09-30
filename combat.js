@@ -6,11 +6,14 @@ import {
 } from "./config.js";
 
 import {
-  apply_bleeding
+  apply_bleeding,
+  apply_stun,
+  apply_attack_boost,
+  get_attack
 } from "./effects.js";
 
 function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
-  let damage = attacker.attack * multiplier;
+  let damage = get_attack(attacker) * multiplier;
   let critical = check_critical();
 
   if (critical) {
@@ -54,6 +57,10 @@ export function attack(attacker, defender) {
     `${result.critical ? " (critical hit)" : ""}`
   );
 
+  if (result.critical) {
+    apply_bleeding(defender);
+  }
+
   return result;
 }
 
@@ -96,7 +103,9 @@ export function strong_attack(attacker, defender) {
   );
 
   if (result.critical) {
-    apply_bleeding(defender);
+    apply_stun(defender);
+  } else {
+    apply_attack_boost(attacker);
   }
 
   return {
