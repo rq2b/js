@@ -1,0 +1,174 @@
+import {
+  ATTACK_SETTINGS,
+  HEAL_SETTINGS,
+  CRITICAL_SETTINGS,
+  DEFENSE_SETTINGS
+} from "./config.js";
+
+import {
+  apply_bleeding,
+  apply_stun,
+  apply_attack_boost,
+  get_attack
+} from "./effects.js";
+
+import {
+  show_message
+} from "./ui.js";
+
+function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
+  let damage = get_attack(attacker) * multiplier;
+  let critical = check_critical();
+
+  if (critical) {
+    damage = calculate_critical_damage(damage);
+  }
+
+  damage = Math.max(1, damage - defender.defense);
+  damage *= defense_multiplier;
+  damage = Math.max(1, damage);
+
+  return {
+    damage: damage,
+    critical: critical
+  };
+}
+
+function execute_attack(attacker, defender, multiplier = 1) {
+  let defense_multiplier = 1;
+
+  if (defender.defending) {
+    defense_multiplier = DEFENSE_SETTINGS.damage_multiplier;
+  }
+
+  let result = calculate_damage(
+    attacker,
+    defender,
+    multiplier,
+    defense_multiplier
+  );
+
+  defender.hp = Math.max(0, defender.hp - result.damage);
+
+  return result;
+}
+
+export function attack(attacker, defender) {
+  let result = execute_attack(attacker, defender);
+
+  show_message(
+    `${attacker.name} атаковал ${defender.name} на ${result.damage} урона` +
+    `${result.critical ? "\nКритический удар!" : ""}`
+  );
+
+  if (result.critical) {
+    apply_bleeding(defender);
+  }
+
+  return result;
+}
+
+export function check_combat_end(combat) {
+  if (combat.player.hp <= 0) {
+    combat.result = "boss_win";
+    show_message("Босс победил.");
+    return true;
+  }
+
+  if (combat.boss.hp <= 0) {
+    combat.result = "player_win";
+    show_message("Игрок победил.");
+    return true;
+  }
+
+  return false;
+}
+
+export function strong_attack(attacker, defender) {
+  if (Math.random() >= ATTACK_SETTINGS.strong_hit_chance) {
+    show_message(`${attacker.name} промахнулся сильной атакой.`);
+
+    return {
+      damage: 0,
+      hit: false,
+      critical: false
+    };
+  }
+
+  let result = execute_attack(
+    attacker,
+    defender,
+    ATTACK_SETTINGS.strong_multiplier
+  );
+
+  show_message(
+    `${attacker.name} нанёс ${result.damage} урона сильной атакой` +
+    `${result.critical ? "\nКритический удар!" : ""}`
+  );
+
+  if (result.critical) {
+    apply_stun(defender);
+  } else {
+    apply_attack_boost(attacker);
+  }
+
+  return {
+    ...result,
+    hit: true
+  };
+}
+
+export function heal(actor) {
+  if (actor.heals <= 0) {
+    show_message(`${actor.name}: хилки закончились.`);
+    return {
+      healed: false,
+      amount: 0
+    };
+  }
+
+  let old_hp = actor.hp;
+
+  actor.hp = Math.min(
+    actor.max_hp,
+    actor.hp + HEAL_SETTINGS.amount
+  );
+
+  let amount = actor.hp - old_hp;
+
+  actor.heals--;
+
+  show_message(`${actor.name} восстановил ${amount} HP.`);
+
+  return {
+    healed: true,
+    amount: amount
+  };
+}
+
+export function defend(actor) {
+  actor.defending = true;
+
+  show_message(`${actor.name} защищается.`);
+
+  return {
+    defending: true
+  };
+}
+
+export function take_turn(combat, actor, target, action) {
+  if (!action) {
+    console.warn("Cannot take turn without an action");
+    return;
+  }
+
+  return action.handler(actor, target);
+}
+
+function check_critical() {
+  return Math.random() < CRITICAL_SETTINGS.chance;
+}
+
+function calculate_critical_damage(damage) {
+  return damage * CRITICAL_SETTINGS.multiplier;
+}
