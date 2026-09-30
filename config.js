@@ -38,3 +38,10 @@ export const ACTORS = {
   BOSS: "boss"
 };
 
+export const BOSS_AI_SETTINGS = {
+  critical_hp_threshold: 0.30,
+  medium_hp_threshold: 0.60,
+  player_hp_threshold: 0.50,
+  strong_attack_hp_threshold: 0.75
+};
+
