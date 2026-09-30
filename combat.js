@@ -5,10 +5,6 @@ import {
   DEFENSE_SETTINGS
 } from "./config.js";
 
-import {
-  ACTORS
-} from "./config.js";
-
 function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
   let damage = attacker.attack * multiplier;
   let critical = check_critical();
@@ -139,50 +135,13 @@ export function defend(actor) {
   };
 }
 
-function next_turn(combat) {
-  if (combat.current_actor == ACTORS.PLAYER) {
-    combat.current_actor = ACTORS.BOSS;
-  } else {
-    combat.current_actor = ACTORS.PLAYER;
-    combat.turn++;
-  }
-
-  combat.phase = `${combat.current_actor}_turn`;
-  combat[combat.current_actor].defending = false;
-
-  console.log(combat);
-}
-
-export function take_turn(combat, action) {
-  if (check_combat_end(combat)) {
-    return;
-  }
-
+export function take_turn(combat, actor, target, action) {
   if (!action) {
     console.warn("Cannot take turn without an action");
     return;
   }
 
-  let actor;
-  let target;
-
-  if (combat.current_actor == ACTORS.PLAYER) {
-    actor = combat.player;
-    target = combat.boss;
-  } else {
-    actor = combat.boss;
-    target = combat.player;
-  }
-
-  let result = action.handler(actor, target);
-
-  if (check_combat_end(combat)) {
-    return result;
-  }
-
-  next_turn(combat);
-
-  return result;
+  return action.handler(actor, target);
 }
 
 function check_critical() {
@@ -192,4 +151,3 @@ function check_critical() {
 function calculate_critical_damage(damage) {
   return damage * CRITICAL_SETTINGS.multiplier;
 }
-

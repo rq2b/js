@@ -2,23 +2,13 @@ import {
   PLAYER_NAME,
   BOSS_NAME,
   PLAYER_SETTINGS,
-  BOSS_SETTINGS,
-  ACTORS
+  BOSS_SETTINGS
 } from "./config.js";
 
 import {
-  take_turn
-} from "./combat.js";
-
-import {
-  ACTIONS,
-  get_action
-} from "./actions.js";
-
-import {
-  choose_boss_action,
-  choose_player_action
-} from "./ai.js";
+  create_fsm,
+  run_turn
+} from "./fsm.js";
 
 const player = {
   name: PLAYER_NAME,
@@ -46,27 +36,13 @@ const combat = {
   player: player,
   boss: boss,
   turn: 1,
-  current_actor: ACTORS.PLAYER,
-  phase: "player_turn",
   result: null
 };
 
-function run_turn() {
-  let action_id;
+const fsm = create_fsm();
 
-  if (combat.current_actor == ACTORS.BOSS) {
-    action_id = choose_boss_action(combat);
-  } else {
-    action_id = choose_player_action(combat);
-  }
-
-  let action = get_action(action_id);
-
-  return take_turn(combat, action);
-}
-
-run_turn();
-run_turn();
-run_turn();
-run_turn();
+run_turn(fsm, combat);
+run_turn(fsm, combat);
+run_turn(fsm, combat);
+run_turn(fsm, combat);
 
