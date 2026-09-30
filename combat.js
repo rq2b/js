@@ -5,6 +5,10 @@ import {
   DEFENSE_SETTINGS
 } from "./config.js";
 
+import {
+  ACTORS
+} from "./config.js";
+
 function calculate_damage(attacker, defender, multiplier = 1, defense_multiplier = 1) {
   let damage = attacker.attack * multiplier;
   let critical = check_critical();
@@ -136,10 +140,10 @@ export function defend(actor) {
 }
 
 function next_turn(combat) {
-  if (combat.current_actor == "player") {
-    combat.current_actor = "boss";
+  if (combat.current_actor == ACTORS.PLAYER) {
+    combat.current_actor = ACTORS.BOSS;
   } else {
-    combat.current_actor = "player";
+    combat.current_actor = ACTORS.PLAYER;
     combat.turn++;
   }
 
@@ -162,7 +166,7 @@ export function take_turn(combat, action) {
   let actor;
   let target;
 
-  if (combat.current_actor == "player") {
+  if (combat.current_actor == ACTORS.PLAYER) {
     actor = combat.player;
     target = combat.boss;
   } else {

@@ -33,3 +33,8 @@ export const CRITICAL_SETTINGS = {
   multiplier: 2
 };
 
+export const ACTORS = {
+  PLAYER: "player",
+  BOSS: "boss"
+};
+
